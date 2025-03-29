@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scholarship Eligibility System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            width: 60%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        select, button {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        select:focus, button:focus {
+            outline: none;
+            border-color: #fda085;
+        }
+        button {
+            background-color: #fda085;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #f6d365;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f6f6f6;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        a {
+            text-decoration: none;
+            color: #fda085;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #message, #infoTable, #schemeTable {
+            margin-top: 20px;
+            display: none;
+        }
+        #successMessage {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+            text-align: center;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎓 Find Eligible Scholarship Schemes</h2>
+    <form id="scholarshipForm">
+        <label for="department">Department:</label>
+        <select id="department" required>
+            <option value="">--Select--</option>
+            <option value="Computational Science">Computational Science</option>
+            <option value="Social Science">Social Science</option>
+        </select>
+
+        <label for="caste">Caste Category:</label>
+        <select id="caste" required>
+            <option value="">--Select--</option>
+            <option value="SC">SC</option>
+            <option value="OPEN">OPEN</option>
+        </select>
+
+        <label for="courseType">Course Type:</label>
+        <select id="courseType" required>
+            <option value="">--Select--</option>
+            <option value="Professional">Professional</option>
+            <option value="Non Professional">Non Professional</option>
+        </select>
+
+        <label for="disability">Disability (Yes or No):</label>
+        <select id="disability" required>
+            <option value="">--Select--</option>
+            <option value="YES">YES</option>
+            <option value="NO">NO</option>
+        </select>
+
+        <button type="button" onclick="submitForm()">🔍 Check Eligibility</button>
+    </form>
+
+    <p id="message"></p>
+    <p id="successMessage"></p>
+
+    <table id="schemeTable">
+        <thead>
+            <tr>
+                <th>GOI Department</th>
+                <th>Scholarship Scheme</th>
+                <th>Apply Link</th>
+            </tr>
+        </thead>
+        <tbody id="schemeBody"></tbody>
+    </table>
+</div>
+
+<script>
+const schemeData = [
+    {
+        department: "Computational Science",
+        caste: "SC",
+        courseType: "Non Professional",
+        disability: "NO",
+        departmentGov: "Social Justice Department",
+        scheme: "GOI Post Matric",
+        link: "https://mahadbt.maharashtra.gov.in/Login/Login"
+    },
+    {
+        department: "Computational Science",
+        caste: "SC",
+        courseType: "Non Professional",
+        disability: "NO",
+        departmentGov: "Social Justice Department",
+        scheme: "Swadhar Yojana",
+        link: "https://hmas.mahait.org/"
+    },
+    {
+        department: "Computational Science",
+        caste: "OPEN",
+        courseType: "Professional",
+        disability: "NO",
+        departmentGov: "Director of Higher Education",
+        scheme: "EBC",
+        link: "https://mahadbt.maharashtra.gov.in/Login/Login"
+    },
+    {
+        department: "Computational Science",
+        caste: "OPEN",
+        courseType: "Professional",
+        disability: "NO",
+        departmentGov: "Director of Higher Education",
+        scheme: "Panjabrao Deshmukh",
+        link: "https://mahadbt.maharashtra.gov.in/Login/Login"
+    },
+    {
+        department: "Social Science",
+        caste: "SC",
+        courseType: "Non Professional",
+        disability: "YES",
+        departmentGov: "Social Justice Department",
+        scheme: "GOI Post Matric (Person with Disability)",
+        link: "https://mahadbt.maharashtra.gov.in/Login/Login"
+    }
+];
+
+function submitForm() {
+    const department = document.getElementById("department").value;
+    const caste = document.getElementById("caste").value;
+    const courseType = document.getElementById("courseType").value;
+    const disability = document.getElementById("disability").value;
+
+    const successMessage = document.getElementById("successMessage");
+    const schemeTable = document.getElementById("schemeTable");
+    const schemeBody = document.getElementById("schemeBody");
+
+    if (department && caste && courseType && disability) {
+        schemeBody.innerHTML = "";
+        const matchingSchemes = schemeData.filter(scheme =>
+            scheme.department === department &&
+            scheme.caste === caste &&
+            scheme.courseType === courseType &&
+            scheme.disability === disability
+        );
+
+        if (matchingSchemes.length > 0) {
+            successMessage.innerHTML = "🎉 <b>You are eligible for the following Scholarships:</b>";
+            matchingSchemes.forEach(scheme => {
+                const row = `<tr>
+                    <td>${scheme.departmentGov}</td>
+                    <td>${scheme.scheme}</td>
+                    <td><a href="${scheme.link}" target="_blank">Apply Here 🚀</a></td>
+                </tr>`;
+                schemeBody.innerHTML += row;
+            });
+            schemeTable.style.display = "table";
+        } else {
+            successMessage.innerHTML = "❗ No matching schemes available. Try changing your criteria.";
+            schemeTable.style.display = "none";
+        }
+
+        successMessage.style.display = "block";
+    } else {
+        alert("Please fill all fields before submitting.");
+    }
+}
+</script>
+
+</body>
+</html>
